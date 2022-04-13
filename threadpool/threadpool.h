@@ -7,6 +7,7 @@
 #include "taskqueue.h"
 #include <vector>
 #include <thread>
+#include <array>
 
 template <typename T>
 class ThreadPool
@@ -20,11 +21,9 @@ public:
 
 
 private:
-    TaskQueue<T>* taskQ;
-  //  pthread_t managerID;   //管理者线程
-    std::vector<std::thread> m_manager;
-  //  pthread_t* threadIDs;  //工作的线程
-    std::vector<std::thread> m_workers;
+    TaskQueue<T>* taskQ;   
+    std::array<std::thread, 1> m_manager;   //管理者线程
+    std::vector<std::thread> m_workers;   //工作的线程
     int minNum;           //最小线程数量
     int maxNum;           //最大线程数量
     int busyNum;          //忙的线程个数
@@ -32,7 +31,6 @@ private:
     int exitNum;         //要销毁的线程个数
     static const int NUMBER = 2;
     std::mutex mutexPool;  //锁整个的线程池
-    std::mutex mutexWorkers;
     std::condition_variable notEmpty;     //任务队列是否为空
     bool shutdown;               //是否要销毁线程池
     static void* worker(void* arg);  //工作的线程（消费者线程）任务函数

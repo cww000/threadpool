@@ -22,7 +22,7 @@ ThreadPool<T>::ThreadPool(int min, int max)
 
         //创建线程
         thread w(manager, this);
-        m_manager.push_back(move(w));
+        m_manager[0] = move(w);
 
         for (int i = 0; i < min; ++i)
         {
@@ -197,7 +197,6 @@ void *ThreadPool<T>::manager(void *arg)
 template <typename T>
 void ThreadPool<T>::threadExit()
 {
-    unique_lock<mutex> lock(mutexWorkers);
     thread::id this_id = this_thread::get_id();
     cout << "threadExit() called " << this_id << " exiting....." << endl;
     pthread_exit(NULL);
